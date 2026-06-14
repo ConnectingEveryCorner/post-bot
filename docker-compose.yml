@@ -1,0 +1,8 @@
+services:
+  post-bot:
+    image: ghcr.io/connectingeverycorner/post-bot:latest
+    restart: always
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./data:/app/data
+      - ./logs:/app/logs

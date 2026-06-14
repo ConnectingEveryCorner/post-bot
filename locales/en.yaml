@@ -1,0 +1,63 @@
+language:
+  name: English
+
+commands:
+  start: Welcome. Use the buttons below to create and manage post resources.
+  help: Send /start to open the main menu.
+  language: Please choose your language.
+  languageLocked: The bot language is locked by configuration.
+  menuStart: Open main menu
+  menuHelp: Show help
+  menuLanguage: Choose language
+
+buttons:
+  createResource: "📝 Create resource"
+  manageResources: "📚 Manage resources"
+  contactSupport: "💬 Contact support"
+  chooseLanguage: "🌐 Choose language"
+  cancel: "✖️ Cancel"
+  backToList: "📚 Back to list"
+  delete: "🗑️ Delete"
+  cancelDelete: "✖️ Cancel delete"
+  confirmDelete: "✅ Confirm delete"
+  addButton: "➕ Add bottom button"
+  copyUsage: "📋 Copy usage"
+  refresh: "🔄 Refresh"
+  previousPage: "⬅️ Previous"
+  nextPage: "➡️ Next"
+  home: "🏠 Back home"
+  backHome: "🏠 Back home"
+
+messages:
+  unknownCommand: Unknown command. Send /help to see available commands.
+  languageChanged: Language changed to English.
+  unsupportedLanguage: Unsupported language.
+  cancelled: Cancelled.
+  limitReached: You have reached the resource limit of {limit}.
+  unsupportedMessage: This message type is not supported yet. Please send one text, photo, GIF, video, audio, voice, document, sticker, contact, location, or venue message.
+  resourceSaved: Resource saved.
+  resourceDeleted: Resource deleted.
+  buttonAdded: Button added.
+  invalidButton: Please send buttons in the correct format.
+  resourceNotFound: Resource not found.
+  resourceLatest: Already latest.
+  privateOnly: Only available in private chat.
+
+resource:
+  sendResource: Please send one message as the resource.
+  detailTitle: Resource details
+  identifier: Identifier
+  type: Type
+  title: Title
+  usage: Usage
+  buttons: Button config
+  noButtons: No buttons configured.
+  buttonRow: Row {row}
+  manageTitle: Your resources
+  emptyList: No resources yet.
+  pageInfo: Page {page}/{totalPages}, total {total}
+  deleteTitle: Delete resource
+  deleteConfirm: Please confirm this resource should be deleted.
+  queryCount: Inline queries
+  sendCount: Inline sends
+  sendButton: "Please send button rows. Each line is one button. Use a blank line to start the next row."

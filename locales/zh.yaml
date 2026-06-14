@@ -1,0 +1,63 @@
+language:
+  name: 简体中文
+
+commands:
+  start: 欢迎使用，请使用下方按钮录入和管理帖子资源
+  help: 发送 /start 打开主菜单
+  language: 请选择语言
+  languageLocked: 机器人语言已在配置中锁定
+  menuStart: 打开主菜单
+  menuHelp: 查看帮助
+  menuLanguage: 选择语言
+
+buttons:
+  createResource: "📝 录入资源"
+  manageResources: "📚 管理资源"
+  contactSupport: "💬 联系客服"
+  chooseLanguage: "🌐 选择语言"
+  cancel: "✖️ 取消录入"
+  backToList: "📚 回到管理列表"
+  delete: "🗑️ 删除"
+  cancelDelete: "✖️ 取消删除"
+  confirmDelete: "✅ 确认删除"
+  addButton: "➕ 新增底部按钮"
+  copyUsage: "📋 复制使用方式"
+  refresh: "🔄 刷新"
+  previousPage: "⬅️ 上一页"
+  nextPage: "➡️ 下一页"
+  home: "🏠 返回首页"
+  backHome: "🏠 返回首页"
+
+messages:
+  unknownCommand: 未知命令，请发送 /help 查看帮助
+  languageChanged: 已切换为简体中文
+  unsupportedLanguage: 不支持这个语言
+  cancelled: 已取消
+  limitReached: 你最多只能录入 {limit} 条资源
+  unsupportedMessage: 暂不支持这种消息类型，请发送单条文本、图片、GIF、视频、音频、语音、文件、贴纸、联系人、位置或地点消息
+  resourceSaved: 资源已录入
+  resourceDeleted: 资源已删除
+  buttonAdded: 按钮已添加
+  invalidButton: 请按正确格式发送按钮
+  resourceNotFound: 资源不存在
+  resourceLatest: 已经是最新
+  privateOnly: 只支持私聊里使用
+
+resource:
+  sendResource: 请发送一条消息作为资源
+  detailTitle: 资源详细信息
+  identifier: 标识符
+  type: 类型
+  title: 标题
+  usage: 使用方式
+  buttons: 按钮配置
+  noButtons: 暂无按钮配置
+  buttonRow: 第 {row} 排
+  manageTitle: 你的资源
+  emptyList: 暂无资源
+  pageInfo: 第 {page}/{totalPages} 页，共 {total} 条
+  deleteTitle: 删除资源
+  deleteConfirm: 请确认是否删除这个资源
+  queryCount: Inline 查询
+  sendCount: Inline 发送
+  sendButton: 请发送按钮行，每一行是一个按钮，空一行代表下一排

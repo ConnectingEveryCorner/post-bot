@@ -1,0 +1,45 @@
+{
+  "name": "post-bot",
+  "version": "1.0.0",
+  "description": "A Telegram bot for saving and reusing single-message post resources.",
+  "main": "index.js",
+  "packageManager": "pnpm@11.6.0",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "telegram",
+    "telegram-bot",
+    "grammy",
+    "post-bot",
+    "inline-bot",
+    "sqlite"
+  ],
+  "author": {
+    "name": "ConnectingEveryCorner",
+    "url": "https://t.me/ConnectingEveryCorner"
+  },
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/ConnectingEveryCorner/post-bot#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ConnectingEveryCorner/post-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ConnectingEveryCorner/post-bot/issues"
+  },
+  "funding": {
+    "type": "custom",
+    "url": "https://t.me/ConnectingEveryCorner"
+  },
+  "type": "module",
+  "dependencies": {
+    "got": "15.0.5",
+    "grammy": "1.43.0",
+    "moment-timezone": "0.6.0",
+    "sqlite3": "5.1.7",
+    "winston": "3.19.0",
+    "winston-daily-rotate-file": "5.0.0",
+    "yaml": "2.9.0"
+  }
+}

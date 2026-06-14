@@ -1,0 +1,34 @@
+bot:
+  token: YOUR_BOT_TOKEN
+
+i18n:
+  defaultLocale: en
+  # Set fixedLocale to en or zh to lock the bot language.
+  # Leave it empty to let users choose with /language.
+  fixedLocale:
+
+post:
+  maxResourcesPerUser: 50
+  managePageSize: 5
+
+support:
+  url: https://example.com/support
+
+updateNotification:
+  enabled: false
+  url: https://example.com/telegram/update
+  authorization: Bearer YOUR_TOKEN
+
+replies:
+  start:
+    en: |
+      Welcome. Use the buttons below to create and manage post resources.
+    zh: |
+      欢迎使用。请使用下方按钮录入和管理帖子资源。
+  help:
+    en: |
+      Send /start to open the main menu.
+      Use inline mode with @your_bot_username identifier to send a resource.
+    zh: |
+      发送 /start 打开主菜单。
+      使用 @机器人用户名 标识符 通过 inline 模式发送资源。
