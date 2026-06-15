@@ -26,6 +26,12 @@ Try the demo bot: [@OpenPostKitBot](https://t.me/OpenPostKitBot) 🤖
 5. Tap `Add bottom button` to add URL buttons under the resource ➕
 6. Tap `Manage resources` to view, refresh, delete, and manage all saved resources 📚
 
+Example inline usage:
+
+```text
+@OpenPostKitBot 47c309e4
+```
+
 ## BotFather Setup ⚠️
 
 Before using inline mode and send statistics, configure these commands in [@BotFather](https://t.me/BotFather):
