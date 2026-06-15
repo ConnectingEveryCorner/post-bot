@@ -109,8 +109,9 @@ function parseButtonLine(line) {
 }
 
 export function extractSingleMessageResource(message) {
+  const sendText = getMessageText(message);
   const base = {
-    text: getMessageText(message),
+    text: sendText,
     entities: message.entities ?? message.caption_entities ?? [],
   };
 
@@ -118,6 +119,7 @@ export function extractSingleMessageResource(message) {
     return {
       type: "text",
       title: trimTitle(message.text, "Text message"),
+      sendText,
       message: {
         ...base,
         text: message.text,
@@ -129,6 +131,7 @@ export function extractSingleMessageResource(message) {
     return {
       type: "photo",
       title: trimTitle(message.caption, "Photo"),
+      sendText,
       message: {
         ...base,
         file_id: getLargestPhoto(message).file_id,
@@ -140,6 +143,7 @@ export function extractSingleMessageResource(message) {
     return {
       type: "animation",
       title: trimTitle(message.caption, "GIF"),
+      sendText,
       message: {
         ...base,
         file_id: message.animation.file_id,
@@ -151,6 +155,7 @@ export function extractSingleMessageResource(message) {
     return {
       type: "video",
       title: trimTitle(message.caption, "Video"),
+      sendText,
       message: {
         ...base,
         file_id: message.video.file_id,
@@ -162,6 +167,7 @@ export function extractSingleMessageResource(message) {
     return {
       type: "audio",
       title: trimTitle(message.audio.title ?? message.caption, "Audio"),
+      sendText,
       message: {
         ...base,
         file_id: message.audio.file_id,
@@ -173,6 +179,7 @@ export function extractSingleMessageResource(message) {
     return {
       type: "voice",
       title: trimTitle(message.caption, "Voice"),
+      sendText,
       message: {
         ...base,
         file_id: message.voice.file_id,
@@ -184,6 +191,7 @@ export function extractSingleMessageResource(message) {
     return {
       type: "document",
       title: trimTitle(message.document.file_name ?? message.caption, "Document"),
+      sendText,
       message: {
         ...base,
         file_id: message.document.file_id,
@@ -195,6 +203,7 @@ export function extractSingleMessageResource(message) {
     return {
       type: "sticker",
       title: trimTitle(message.sticker.emoji, "Sticker"),
+      sendText,
       message: {
         ...base,
         file_id: message.sticker.file_id,
@@ -206,6 +215,7 @@ export function extractSingleMessageResource(message) {
     return {
       type: "contact",
       title: trimTitle(message.contact.first_name, "Contact"),
+      sendText,
       message: {
         phone_number: message.contact.phone_number,
         first_name: message.contact.first_name,
@@ -219,6 +229,7 @@ export function extractSingleMessageResource(message) {
     return {
       type: "location",
       title: "Location",
+      sendText,
       message: {
         latitude: message.location.latitude,
         longitude: message.location.longitude,
@@ -230,6 +241,7 @@ export function extractSingleMessageResource(message) {
     return {
       type: "venue",
       title: trimTitle(message.venue.title, "Venue"),
+      sendText,
       message: {
         latitude: message.venue.location.latitude,
         longitude: message.venue.location.longitude,
@@ -453,40 +465,62 @@ export function resourceDetailKeyboard(
   page = 1,
   usageText,
 ) {
-  return {
-    inline_keyboard: [
-      [
-        {
-          text: i18n.t(locale, "buttons.copyUsage"),
-          copy_text: {
-            text: usageText,
-          },
+  const rows = [
+    [
+      {
+        text: i18n.t(locale, "buttons.copyUsage"),
+        copy_text: {
+          text: usageText,
         },
-      ],
-      [
-        {
-          text: i18n.t(locale, "buttons.refresh"),
-          callback_data: `resource:refresh:${resource.id}:${page}`,
-        },
-      ],
-      [
-        {
-          text: i18n.t(locale, "buttons.addButton"),
-          callback_data: `resource:add_button:${resource.id}:${page}`,
-        },
-        {
-          text: i18n.t(locale, "buttons.delete"),
-          callback_data: `resource:delete:${resource.id}:${page}`,
-        },
-      ],
-      [
-        {
-          text: i18n.t(locale, "buttons.backToList"),
-          callback_data: `manage:${page}`,
-        },
-      ],
+      },
     ],
+  ];
+
+  if (hasResourceSendText(resource)) {
+    rows.push([
+      {
+        text: i18n.t(locale, "buttons.editSendText"),
+        callback_data: `resource:edit_text:${resource.id}:${page}`,
+      },
+    ]);
+  }
+
+  rows.push(
+    [
+      {
+        text: i18n.t(locale, "buttons.refresh"),
+        callback_data: `resource:refresh:${resource.id}:${page}`,
+      },
+    ],
+    [
+      {
+        text: i18n.t(locale, "buttons.addButton"),
+        callback_data: `resource:add_button:${resource.id}:${page}`,
+      },
+      {
+        text: i18n.t(locale, "buttons.delete"),
+        callback_data: `resource:delete:${resource.id}:${page}`,
+      },
+    ],
+    [
+      {
+        text: i18n.t(locale, "buttons.createResource"),
+        callback_data: "record:start",
+      },
+      {
+        text: i18n.t(locale, "buttons.backToList"),
+        callback_data: `manage:${page}`,
+      },
+    ],
+  );
+
+  return {
+    inline_keyboard: rows,
   };
+}
+
+export function hasResourceSendText(resource) {
+  return String(resource?.send_text ?? "").trim().length > 0;
 }
 
 export function deleteConfirmKeyboard(resource, i18n, locale, page = 1) {
@@ -562,7 +596,11 @@ export function resourceDetailText(i18n, locale, resource, botUsername) {
     "",
     `${i18n.t(locale, "resource.identifier")}: ${code(resource.identifier)}`,
     `${i18n.t(locale, "resource.type")}: ${escapeHtml(resource.type)}`,
-    `${i18n.t(locale, "resource.title")}: ${escapeHtml(resource.title)}`,
+    `${i18n.t(locale, "resource.sendText")}: ${
+      hasResourceSendText(resource)
+        ? code(resource.send_text)
+        : i18n.t(locale, "resource.noSendText")
+    }`,
     `${i18n.t(locale, "resource.queryCount")}: ${code(resource.query_count ?? 0)}`,
     `${i18n.t(locale, "resource.sendCount")}: ${code(resource.send_count ?? 0)}`,
     "",
@@ -600,7 +638,11 @@ export function deleteConfirmText(i18n, locale, resource) {
     i18n.t(locale, "resource.deleteConfirm"),
     "",
     `${i18n.t(locale, "resource.identifier")}: ${code(resource.identifier)}`,
-    `${i18n.t(locale, "resource.title")}: ${escapeHtml(resource.title)}`,
+    `${i18n.t(locale, "resource.sendText")}: ${
+      hasResourceSendText(resource)
+        ? code(resource.send_text)
+        : i18n.t(locale, "resource.noSendText")
+    }`,
   ].join("\n");
 }
 

@@ -32,6 +32,7 @@ export const Resources = {
         identifier TEXT NOT NULL UNIQUE,
         type TEXT NOT NULL,
         title TEXT NOT NULL,
+        send_text TEXT NOT NULL,
         message_json TEXT NOT NULL,
         query_count INTEGER NOT NULL DEFAULT 0,
         send_count INTEGER NOT NULL DEFAULT 0,
@@ -64,13 +65,14 @@ export const Resources = {
   async create(userId, resource) {
     const identifier = await createUniqueIdentifier();
     const result = await run(
-      `INSERT INTO resources (owner_user_id, identifier, type, title, message_json)
-       VALUES (?, ?, ?, ?, ?)`,
+      `INSERT INTO resources (owner_user_id, identifier, type, title, send_text, message_json)
+       VALUES (?, ?, ?, ?, ?, ?)`,
       [
         String(userId),
         identifier,
         resource.type,
         resource.title,
+        resource.sendText,
         JSON.stringify(resource.message),
       ],
     );
@@ -137,6 +139,31 @@ export const Resources = {
     );
   },
 
+  async updateSendText(id, userId, sendText) {
+    const resource = await this.getById(id);
+
+    if (!resource || resource.owner_user_id !== String(userId)) {
+      return undefined;
+    }
+
+    const message = {
+      ...resource.message,
+      text: sendText,
+      entities: [],
+    };
+
+    await run(
+      `UPDATE resources
+       SET send_text = ?,
+           message_json = ?,
+           updated_at = CURRENT_TIMESTAMP
+       WHERE id = ? AND owner_user_id = ?`,
+      [sendText, JSON.stringify(message), id, String(userId)],
+    );
+
+    return this.getById(id);
+  },
+
   async incrementQueryCount(id) {
     await run(
       `UPDATE resources
@@ -170,9 +197,12 @@ async function hydrateResource(resource) {
     return undefined;
   }
 
+  const message = JSON.parse(resource.message_json);
+  message.text = resource.send_text;
+
   return {
     ...resource,
-    message: JSON.parse(resource.message_json),
+    message,
     buttons: await Resources.getButtons(resource.id),
   };
 }

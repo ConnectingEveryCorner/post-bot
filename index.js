@@ -201,6 +201,56 @@ async function handleAddButtonMessage(config, i18n, ctx, botUsername, state) {
   await showResourceDetail(config, i18n, ctx, updatedResource, botUsername);
 }
 
+async function handleEditSendTextMessage(config, i18n, ctx, botUsername, state) {
+  const locale = await getContextLocale(ctx, i18n);
+  const resource = await Resources.getById(state.data.resourceId);
+
+  if (!resource || resource.owner_user_id !== String(ctx.from.id)) {
+    await UserStates.clear(ctx.from.id);
+    await editStateMessage(config, ctx, state, {
+      text: i18n.t(locale, "messages.resourceNotFound"),
+      reply_markup: util.startKeyboard(config, i18n, locale),
+    });
+    return;
+  }
+
+  if (!util.hasResourceSendText(resource)) {
+    await UserStates.clear(ctx.from.id);
+    await editStateMessage(config, ctx, state, {
+      text: i18n.t(locale, "resource.noSendText"),
+      reply_markup: util.resourceDetailKeyboard(
+        resource,
+        i18n,
+        locale,
+        Number(state.data.page) || 1,
+        `@${botUsername} ${resource.identifier}`,
+      ),
+    });
+    return;
+  }
+
+  const sendText = ctx.message.text?.trim();
+
+  if (!sendText) {
+    await editStateMessage(config, ctx, state, {
+      text: `${i18n.t(locale, "messages.invalidSendText")}\n\n${i18n.t(
+        locale,
+        "resource.sendEditText",
+      )}`,
+      reply_markup: util.cancelKeyboard(i18n, locale),
+    });
+    return;
+  }
+
+  const updatedResource = await Resources.updateSendText(
+    resource.id,
+    ctx.from.id,
+    sendText,
+  );
+  await UserStates.clear(ctx.from.id);
+  await showResourceDetail(config, i18n, ctx, updatedResource, botUsername);
+}
+
 function registerCommands(bot, config, i18n) {
   bot.command("start", async (ctx) => {
     const locale = await getContextLocale(ctx, i18n);
@@ -303,6 +353,19 @@ function registerCallbacks(bot, config, i18n, botUsername) {
     });
 
     if (state?.step === "add_button") {
+      const resource = await Resources.getById(state.data.resourceId);
+      const page = Number(state.data.page) || 1;
+
+      if (resource && resource.owner_user_id === String(ctx.from.id)) {
+        await editResourceDetail(config, i18n, ctx, resource, botUsername, page);
+        return;
+      }
+
+      await showManageList(config, i18n, ctx, page);
+      return;
+    }
+
+    if (state?.step === "edit_send_text") {
       const resource = await Resources.getById(state.data.resourceId);
       const page = Number(state.data.page) || 1;
 
@@ -502,6 +565,47 @@ function registerCallbacks(bot, config, i18n, botUsername) {
     });
   });
 
+  bot.callbackQuery(/^resource:edit_text:(\d+)(?::(\d+))?$/, async (ctx) => {
+    if (!(await ensurePrivateCallback(config, i18n, ctx))) {
+      return;
+    }
+
+    const locale = await getContextLocale(ctx, i18n);
+    const resource = await Resources.getById(Number(ctx.match[1]));
+    const page = Number(ctx.match[2]) || 1;
+
+    if (!resource || resource.owner_user_id !== String(ctx.from.id)) {
+      await telegram.answerCallbackQuery(config.bot.token, {
+        callback_query_id: ctx.callbackQuery.id,
+        text: i18n.t(locale, "messages.resourceNotFound"),
+      });
+      return;
+    }
+
+    if (!util.hasResourceSendText(resource)) {
+      await telegram.answerCallbackQuery(config.bot.token, {
+        callback_query_id: ctx.callbackQuery.id,
+        text: i18n.t(locale, "resource.noSendText"),
+      });
+      return;
+    }
+
+    await UserStates.set(ctx.from.id, "edit_send_text", {
+      resourceId: resource.id,
+      page,
+      panelMessageId: ctx.callbackQuery.message.message_id,
+    });
+    await telegram.answerCallbackQuery(config.bot.token, {
+      callback_query_id: ctx.callbackQuery.id,
+    });
+    await telegram.editMessageText(config.bot.token, {
+      chat_id: ctx.chat.id,
+      message_id: ctx.callbackQuery.message.message_id,
+      text: i18n.t(locale, "resource.sendEditText"),
+      reply_markup: util.cancelKeyboard(i18n, locale),
+    });
+  });
+
   bot.callbackQuery(/^language:(.+)$/, async (ctx) => {
     const selectedLocale = ctx.match[1];
     const currentLocale = await getContextLocale(ctx, i18n);
@@ -559,6 +663,11 @@ function registerMessages(bot, config, i18n, botUsername) {
 
     if (state?.step === "add_button") {
       await handleAddButtonMessage(config, i18n, ctx, botUsername, state);
+      return;
+    }
+
+    if (state?.step === "edit_send_text") {
+      await handleEditSendTextMessage(config, i18n, ctx, botUsername, state);
       return;
     }
 

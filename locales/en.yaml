@@ -21,6 +21,7 @@ buttons:
   cancelDelete: "✖️ Cancel delete"
   confirmDelete: "✅ Confirm delete"
   addButton: "➕ Add bottom button"
+  editSendText: "✏️ Edit send text"
   copyUsage: "📋 Copy usage"
   refresh: "🔄 Refresh"
   previousPage: "⬅️ Previous"
@@ -39,6 +40,7 @@ messages:
   resourceDeleted: Resource deleted.
   buttonAdded: Button added.
   invalidButton: Please send buttons in the correct format.
+  invalidSendText: Please send text content.
   resourceNotFound: Resource not found.
   resourceLatest: Already latest.
   privateOnly: Only available in private chat.
@@ -48,7 +50,8 @@ resource:
   detailTitle: Resource details
   identifier: Identifier
   type: Type
-  title: Title
+  sendText: Send text
+  noSendText: No send text.
   usage: Usage
   buttons: Button config
   noButtons: No buttons configured.
@@ -61,3 +64,4 @@ resource:
   queryCount: Inline queries
   sendCount: Inline sends
   sendButton: "Please send button rows. Each line is one button. Use a blank line to start the next row."
+  sendEditText: Please send the new send text.
