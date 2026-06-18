@@ -17,6 +17,8 @@ Post Bot 是一个 Telegram 帖子资源录入机器人，用来保存和复用�
 
 示例机器人: [@OpenPostKitBot](https://t.me/OpenPostKitBot) 🤖
 
+![Usage demo](./docs/images/demo.gif)
+
 ## 如何使用 ✨
 
 1. 发送 `/start` 打开主菜单 🏠

@@ -17,6 +17,8 @@ With Post Bot, users can:
 
 Try the demo bot: [@OpenPostKitBot](https://t.me/OpenPostKitBot) 🤖
 
+![Usage demo](./docs/images/demo.gif)
+
 ## How to Use ✨
 
 1. Send `/start` to open the main menu 🏠
