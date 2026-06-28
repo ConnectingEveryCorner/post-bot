@@ -57,6 +57,8 @@ inline 使用示例：
 
 ## Docker Compose 部署 🐳
 
+https://youtu.be/GNwz4eEDuIk
+
 ### 1. 准备配置文件 ⚙️
 
 复制配置模板：
